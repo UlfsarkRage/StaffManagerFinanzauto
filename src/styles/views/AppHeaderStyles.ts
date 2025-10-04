@@ -34,4 +34,12 @@ export const AppHeaderStyles = StyleSheet.create({
         fontSize: 24,
         color: 'white',
     },
+    
+    breadcrumbBase: {
+        fontSize: 25, 
+        color: 'white', 
+        fontWeight: 'bold', // Negrita
+    },
+
+    
 });

@@ -27,6 +27,9 @@ export const UserListViewStyles = StyleSheet.create({
         paddingBottom: 20, // Añadir padding inferior para que el último item no quede tapado por la barra inferior
     },
     loading: {
-        marginTop: 50,
+        flex: 1, // Ocupa todo el espacio disponible del contenedor
+        justifyContent: 'center', // Centrado vertical
+        alignItems: 'center',    // Centrado horizontal
+        marginTop: 20, // Mantenemos el margen superior para que no toque el título
     },
 });

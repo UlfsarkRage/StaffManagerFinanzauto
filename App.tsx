@@ -4,6 +4,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import RootNavigator from './src/navigation//RootNavigator';
 
+
 /**
  * @name App
  * @description Punto de entrada principal de la aplicación.

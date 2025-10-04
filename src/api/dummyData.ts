@@ -7,11 +7,18 @@ import { User } from '../types/user'; // Importamos el tipo que definimos
  * @description Datos quemados para simular la respuesta de la API de lista de usuarios.
  * Usaremos estos datos hasta que conectemos la API real.
  */
-export const DUMMY_USERS: User[] = [
+let DUMMY_USERS: User[] = [
     {
         id: '60d0fe4f5311236168a109ca',
         title: 'ms',
         firstName: 'Sara Sofía',
+        lastName: 'Andersen Toro',
+        picture: 'https://randomuser.me/api/portraits/women/1.jpg',
+    },
+    {
+        id: '60d0fe4f5311236168a109ca',
+        title: 'ms',
+        firstName: 'Sara Sofía 2',
         lastName: 'Andersen Toro',
         picture: 'https://randomuser.me/api/portraits/women/1.jpg',
     },
@@ -54,11 +61,26 @@ export const DUMMY_USERS: User[] = [
 
 /**
  * @name fetchDummyUsers
- * @description Función asíncrona simulada para obtener los usuarios.
- * Simula una llamada a la API.
+ * @description Simula la obtención de la lista de usuarios con un retraso.
+ * @returns {Promise<User[]>} Una promesa que resuelve con la lista actual de usuarios.
  */
-export const fetchDummyUsers = async (): Promise<User[]> => {
-    // SIMULACIÓN: Podrías añadir un delay para simular la latencia de la red
-    await new Promise<void>(resolve => setTimeout(() => resolve(), 5000));
-    return DUMMY_USERS;
+export const fetchDummyUsers = (): Promise<User[]> => {
+    return new Promise(resolve => {
+        // Retraso de 1000ms para simular carga
+        setTimeout(() => {
+            resolve([...DUMMY_USERS]); // Retorna una copia de la lista actual
+        }, 300);
+    });
+};
+
+/**
+ * @name deleteUserFromDummyData
+ * @description Elimina un usuario del array harcodeado y retorna la nueva lista.
+ * @param userId El ID del usuario a eliminar.
+ * @returns {User[]} El nuevo array de usuarios.
+ */
+export const deleteUserFromDummyData = (userId: string): User[] => {
+    // Filtra el array, manteniendo solo los usuarios cuyo ID NO coincide con el ID a eliminar.
+    DUMMY_USERS = DUMMY_USERS.filter(user => user.id !== userId);
+    return [...DUMMY_USERS];
 };

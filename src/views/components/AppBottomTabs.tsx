@@ -9,7 +9,7 @@ import { AppBottomTabsStyles as styles } from '../../styles/views/AppBottomTabsS
 // TIPADO: Definimos la forma de las props para manejar el cambio de vista
 interface AppBottomTabsProps {
     // Definimos una función que recibirá el nombre de la vista a mostrar
-    onViewChange: (viewName: 'List' | 'Search' | 'Alerts' | 'Settings' | 'Form') => void;
+    onViewChange: (viewName: 'ListaUsuarios' | 'BuscarUsuario' | 'Alertas' | 'Configuracion' | 'RegistroUsuario') => void;
     currentView: string;
 }
 
@@ -36,24 +36,24 @@ const AppBottomTabs: React.FC<AppBottomTabsProps> = ({ onViewChange, currentView
     return (
         <View style={styles.tabBarContainer}>
             {/* Pestaña HOME / LIST */}
-            {renderIcon("home", "List")} 
+            {renderIcon("home", "ListaUsuarios")} 
 
             {/* Pestaña SEARCH */}
-            {renderIcon("search", "Search")} 
-            
+            {renderIcon("search", "BuscarUsuario")} 
+
             {/* BOTÓN FLOTANTE: Usamos el CustomFloatingButton */}
             <TouchableOpacity 
                 style={styles.floatingButtonContainer}
-                onPress={() => onViewChange('Form')} // Navega a la vista de Formulario
+                onPress={() => onViewChange('RegistroUsuario')} // Navega a la vista de Registro de Usuario
             >
                  <Icon name="add" color="white" size={30} />
             </TouchableOpacity>
 
             {/* Pestaña ALERTS */}
-            {renderIcon("notifications", "Alerts")} 
+            {renderIcon("notifications", "Alertas")} 
 
             {/* Pestaña SETTINGS */}
-            {renderIcon("settings", "Settings")} 
+            {renderIcon("settings", "Configuracion")} 
         </View>
     );
 };

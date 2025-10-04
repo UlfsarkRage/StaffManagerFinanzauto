@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F0FFF0', // Fondo de color claro para diferenciar
+        backgroundColor: '#ffffffff', 
     },
     text: {
         fontSize: 20,

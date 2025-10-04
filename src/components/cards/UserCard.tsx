@@ -1,121 +1,160 @@
 // src/components/UserCard.tsx
 
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { User } from '../../types/user'; // IMPORTACIÓN: El tipo de dato para tipado fuerte
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../types/navigation'; 
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  Animated,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
+import { User } from '../../types/user';
+import { UserCardStyles as styles } from '../../styles/components/UserCardStyles';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// TIPADO: Definimos la propiedad de navegación que vamos a usar
-type UserListScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'UserList'
->;
-
+/// DEFINICIÓN DE PROPIEDADES: Añadimos la función para la acción de deslizar
 interface UserCardProps {
-  user: User; // PROPIEDAD: El componente espera un objeto de tipo User
+  user: User;
+  onDetailPress: (userId: string) => void;
+  onSwipeDelete: (user: User) => void; // Función para abrir el modal de eliminación
 }
 
 /**
  * @name UserCard
- * @description Componente modular para mostrar la información básica de un usuario en la lista (Imagen 1).
- * Incluye funcionalidad para ir a la pantalla de detalle.
+ * @description Componente de tarjeta reutilizable con Swipeable para eliminación.
  */
-const UserCard: React.FC<UserCardProps> = ({ user }) => {
-  // HOOKS: Obtenemos el objeto de navegación para poder cambiar de pantalla
-  const navigation = useNavigation<UserListScreenNavigationProp>();
+const UserCard: React.FC<UserCardProps> = ({
+  user,
+  onDetailPress,
+  onSwipeDelete,
+}) => {
+  // NUEVO ESTADO: Controla si la tarjeta ha sido clickeada y está en modo "espera" de navegación.
+  const [isClicked, setIsClicked] = useState(false);
+  const swipeableRef = React.useRef<Swipeable>(null);
 
-  const goToDetail = () => {
-    // NAVEGACIÓN: Nos moveremos a la pantalla 'UserDetail', pasando el ID
-    navigation.navigate('UserDetail', { userId: user.id });
+  /**
+   * @name handlePress
+   * @description Maneja el evento de presión de la tarjeta y aplica el retraso.
+   */
+  const handlePress = () => {
+    // 1. Establecer el estado 'isClicked' a true
+    // Esto aplica el estilo verde inmediatamente y lo mantiene.
+    setIsClicked(true);
+
+    // 2. Iniciar el retraso de 1 segundo
+    setTimeout(() => {
+      // 3. Después del retraso, ejecuta la navegación.
+      // La tarjeta volverá a su estado inicial cuando el componente UserListView se remonte.
+      onDetailPress(user.id);
+
+      // NOTA: No necesitamos setIsClicked(false) porque el componente se desmonta al navegar.
+    }, 300);
   };
 
-  return (
-    // TouchableOpacity hace el componente clickeable y añade feedback visual al presionar
-    <TouchableOpacity style={styles.card} onPress={goToDetail}>
-      {/* 1. IMAGEN DE PERFIL */}
-      <View style={styles.imagePlaceholder}>
-        <Image 
-          source={{ uri: user.picture }} // FUENTE: Usamos la URL del dummy data
-          style={styles.picture} 
-        />
-      </View>
+  /**
+   * @name renderRightActions
+   * @description Renderiza la acción de "eliminar" que aparece al deslizar de derecha a izquierda.
+   * @param progress Progreso de la acción de deslizamiento.
+   * @param dragX Posición de arrastre en el eje X.
+   */
+  const renderRightActions = (
+    
+    progress: Animated.AnimatedInterpolation<number>,
+    dragX: Animated.AnimatedInterpolation<number>,
+  ) => {
+    // Define el rango para que el botón se "agrandee" mientras se desliza
+    const scale = dragX.interpolate({
+      inputRange: [-100, 0], // Mueve desde -100px (abierto) hasta 0px (cerrado)
+      outputRange: [1, 0], // Escala de 1 (visible) a 0 (invisible)
+      extrapolate: 'clamp',
+    });
+    return (
+      <TouchableOpacity
+        style={componentStyles.deleteAction}
+        onPress={() => {
+          onSwipeDelete(user); // Abre el modal de confirmación
+          swipeableRef.current?.close(); // Cierra el swipeable inmediatamente
+        }}
+      >
+        <Animated.View
+          style={[
+            componentStyles.deleteIconContainer,
+            { transform: [{ scale }] },
+          ]}
+        >
+          <Icon name="trash-can-outline" size={30} color="white" />
+        </Animated.View>
+      </TouchableOpacity>
+    );
+  };
 
-      <View style={styles.infoContainer}>
-        {/* 2. NOMBRE COMPLETO */}
-        <Text style={styles.name} numberOfLines={1}>
-          {user.firstName} {user.lastName} 
-        </Text>
-        
-        {/* 3. ID (Como en el mockup) */}
-        <Text style={styles.idText}>
-            ID: {user.id}
-        </Text>
-        
-        {/* 4. ENLACE DE DETALLE */}
-        <Text style={styles.detailLink}>Ver detalle </Text>
-      </View>
-    </TouchableOpacity>
+  // EL ESTILO PRINCIPAL DE LA TARJETA (QUE SE DESLIZA)
+  const cardStyle = ({ pressed }: { pressed: boolean }) => [
+    styles.cardContainer,
+    isClicked ? styles.cardFocus : styles.cardDefault,
+    // Usamos la prop 'pressed' de Pressable para darle feedback táctil
+    // si no estamos en modo espera.
+    pressed && !isClicked ? { opacity: 0.8 } : {},
+  ];
+
+  return (
+    <Swipeable
+      ref={swipeableRef}
+      // Mínima distancia para que se dispare la acción
+      renderRightActions={renderRightActions}
+      rightThreshold={50}
+      // Esto asegura que se muestre la parte de la tarjeta que no se desliza
+      overshootRight={false}
+    >
+      <Pressable onPress={handlePress} style={cardStyle} disabled={isClicked}>
+        {/* 1. Contenedor de la Imagen */}
+        <View style={styles.imageContainer}>
+          <Image
+            source={{
+              uri: user.picture || 'https://via.placeholder.com/150',
+            }}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        </View>
+
+        {/* 2. Contenedor de Texto y Link */}
+        <View style={styles.textContainer}>
+          <Text style={styles.nameText} numberOfLines={2}>
+            {user.firstName} {user.lastName}
+          </Text>
+          <Text style={styles.idText}>ID: {user.id}</Text>
+
+          <View style={styles.detailLinkContainer}>
+            <Text style={styles.detailText}>Ver detalle</Text>
+            <Icon name="chevron-right" style={styles.detailIcon} />
+          </View>
+        </View>
+      </Pressable>
+    </Swipeable>
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    flexDirection: 'row', // Horizontal
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 15,
-    marginVertical: 5, // Pequeño espacio vertical entre tarjetas
-    // Sombra (simulando la elevación suave del mockup)
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3, 
+// Estilos específicos para la acción de deslizar
+const componentStyles = StyleSheet.create({
+  deleteAction: {
+    backgroundColor: '#D32F2F', // Rojo de eliminación
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    paddingHorizontal: 20,
+    marginVertical: 8,
+    borderRadius: 15,
+    // Asegura que tenga el mismo alto que la tarjeta
+    height: 'auto',
   },
-  imagePlaceholder: {
-    // Contorno y fondo gris claro del mockup
-    width: 80, 
-    height: 80,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#F0F0F0',
+  deleteIconContainer: {
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
-    overflow: 'hidden', // Para que la imagen no se salga del contenedor
-  },
-  picture: {
-    width: '100%', // La imagen ocupa todo el placeholder
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  infoContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#E6FFE6', // Fondo verde muy claro del texto del mockup
-    padding: 10,
-    borderRadius: 5,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#176D6C', // Color oscuro para el nombre
-    marginBottom: 4,
-  },
-  idText: {
-    fontSize: 12,
-    color: '#4D4D4D',
-  },
-  detailLink: {
-    fontSize: 14,
-    color: '#00A859', // Verde corporativo para enlaces
-    marginTop: 8,
-    fontWeight: '600',
-    alignSelf: 'flex-end', // Alinea el enlace a la derecha dentro de su contenedor
   },
 });
 

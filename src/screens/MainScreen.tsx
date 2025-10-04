@@ -6,72 +6,107 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import AppHeader from '../views/components/AppHeader';
 import AppBottomTabs from '../views/components/AppBottomTabs';
-import UserListView from '../views/list/UserListView'; 
-// Importaciones de los placeholders (para las demás vistas)
-import UserFormView from '../views/form/UserFormView'; 
-import { SearchScreen, AlertsScreen, SettingsScreen } from '../views/list/UserListView'; // Usamos los placeholders antiguos por ahora
+import UserListView from '../views/list/UserListView';
+import MenuModal from '../components/common/MenuModal';
+import UserFormView from '../views/form/UserFormView';
+import SearchScreen from '../views/search/SearchScreen';
+import AlertsScreen from '../views/alerts/AlertsScreen';
+import SettingsScreen from '../views/settings/SettingsScreen';
 
-// TIPADO: Definimos los nombres de las vistas internas
-type AppView = 'List' | 'Search' | 'Alerts' | 'Settings' | 'Form';
+type AppView =
+  | 'ListaUsuarios'
+  | 'BuscarUsuario'
+  | 'Alertas'
+  | 'Configuracion'
+  | 'RegistroUsuario';
 
 /**
  * @name MainScreen
- * @description La única pantalla de navegación del Stack. 
+ * @description La única pantalla de navegación del Stack.
  * Contiene el Header y el Contenido de la Aplicación.
  */
 const MainScreen: React.FC = () => {
-    // ESTADO CENTRAL: Mantiene el registro de la vista actual (por defecto: 'List')
-    const [currentView, setCurrentView] = useState<AppView>('List');
+  const [currentView, setCurrentView] = useState<AppView>('ListaUsuarios');
+  const [isMenuModalVisible, setIsMenuModalVisible] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  /**
+   * @name handleViewChange
+   * @description Función wrapper que gestiona el cambio de vista y la limpieza del ID.
+   * @param newView La nueva vista a la que se desea navegar.
+   */
 
-    // FUNCIÓN: Decide qué componente renderizar en el centro
-    const renderContent = () => {
-        switch (currentView) {
-            case 'List':
-                return <UserListView />;
-            case 'Form':
-                return <UserFormView />;
-            case 'Search':
-                return <SearchScreen />;
-            case 'Alerts':
-                return <AlertsScreen />;
-            case 'Settings':
-                return <SettingsScreen />; 
-            default:
-                return <UserListView />;
-        }
-    };
-    return (
-        // Usamos View como contenedor principal para que el Footer quede fijo
-        <View style={styles.fullScreenContainer}> 
-            {/* 1. HEADER: Fijo en la parte superior */}
-            <SafeAreaView style={styles.headerContainer}>
-                <AppHeader />
-            </SafeAreaView>
+  const handleViewChange = (newView: AppView) => {
+    // LÓGICA CLAVE: Si la nueva vista NO es la de detalle ('BuscarUsuario'),
+    // significa que estamos saliendo del detalle, por lo que limpiamos el ID.
+    if (newView !== 'BuscarUsuario') {
+      setSelectedUserId(null);
+    }
 
-           
-            <View style={styles.contentContainer}>
-                {renderContent()} 
-            </View>
+    // Finalmente, actualizamos la vista actual.
+    setCurrentView(newView);
+  };
 
-            {/* 3. FOOTER: Fijo en la parte inferior. Pasa el setView como prop */}
-            <AppBottomTabs onViewChange={setCurrentView} currentView={currentView} />
-        </View>
-    );
+  /**
+   * @name handleUserDetail
+   * @description Navega a la vista de búsqueda (detalle) y almacena el ID del usuario.
+   * @param userId El ID del usuario a detallar.
+   */
+  const handleUserDetail = (userId: string) => {
+    setSelectedUserId(userId);
+    setCurrentView('BuscarUsuario'); // Cambiamos la vista a 'BuscarUsuario' (que usaremos como Detalle)
+  };
+
+  // FUNCIÓN: Decide qué componente renderizar en el centro
+  const renderContent = () => {
+    switch (currentView) {
+      case 'ListaUsuarios':
+        return <UserListView onUserDetail={handleUserDetail} />;
+      case 'RegistroUsuario':
+        return <UserFormView />;
+      case 'BuscarUsuario':
+        return <SearchScreen userId={selectedUserId} />;
+      case 'Alertas':
+        return <AlertsScreen />;
+      case 'Configuracion':
+        return <SettingsScreen />;
+      default:
+        return <UserListView onUserDetail={handleUserDetail} />;
+    }
+  };
+  return (
+    <View style={styles.fullScreenContainer}>
+      <SafeAreaView style={styles.headerContainer}>
+        <AppHeader
+          currentViewName={currentView}
+          onMenuPress={() => setIsMenuModalVisible(true)}
+        />
+      </SafeAreaView>
+
+      <View style={styles.contentContainer}>{renderContent()}</View>
+
+     <AppBottomTabs onViewChange={handleViewChange} currentView={currentView} />
+
+      <MenuModal
+        isVisible={isMenuModalVisible}
+        onClose={() => setIsMenuModalVisible(false)}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    fullScreenContainer: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
-    headerContainer: {
-        backgroundColor: 'white',
-    },
-    contentContainer: {
-        flex: 1,
-        // Añadimos un padding inferior para que el último item de la lista no quede debajo del Footer.
-        paddingBottom: 60, 
-    }
+  fullScreenContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  headerContainer: {
+    backgroundColor: 'white',
+  },
+  contentContainer: {
+    flex: 1,
+    // Añadimos un padding inferior para que el último item de la lista no quede debajo del Footer.
+    paddingBottom: 60,
+  },
 });
 
 export default MainScreen;
