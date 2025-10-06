@@ -1,14 +1,47 @@
-// src/types/user.ts
+// src/types/user.ts 
 
-/**
- * @name User
- * @description Define la estructura de datos del usuario, basándonos
- * en los campos que necesitamos mostrar en la Tarjeta (Imagen 1).
- */
+// Interfaz para los datos que retorna la API
 export interface User {
-  id: string; // El ID es necesario para el CRUD y el detalle
-  title: 'mr' | 'ms' | 'mrs' | 'miss' | 'dr'; // Título de cortesía
-  firstName: string;
-  lastName: string;
-  picture: string; // URL de la imagen de perfil
+    id: string;
+    title: 'mr' | 'ms' | 'mrs' | 'miss' | 'dr' | ''; 
+    firstName: string;
+    lastName: string;
+    gender: 'male' | 'female' | 'other' | ''; 
+    email: string;
+    dateOfBirth: string; 
+    phone: string;
+    picture: string;
+    document: string; 
+}
+
+// Interfaz para los datos que se envían a la API al crear (payload)
+
+export interface UserCreatePayload {
+    title: 'mr' | 'ms' | 'mrs' | 'miss' | 'dr' | '';
+    firstName: string;
+    lastName: string;
+    gender: 'male' | 'female' | 'other' | '';
+    email: string;
+    dateOfBirth: string;
+    phone: string;
+    picture: string;
+    document: string; 
+}
+
+interface ValidationRules {
+    required?: boolean;
+    minLength?: number;
+    isEmail?: boolean;
+    isNumeric?: boolean;
+    // --- AÑADIR ESTA PROPIEDAD ---
+    isOneOf?: string[]; // La regla isOneOf espera un array de strings (los valores válidos)
+}
+
+export interface FieldConfig {
+    label: string;
+    icon: string;
+    placeholder: string;
+    type: 'text' | 'email' | 'password' | 'phone' | 'date'; // Asegúrate de que no tenga 'select'
+    keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+    validation: ValidationRules; // Ahora ValidationRules contiene isOneOf
 }

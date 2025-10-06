@@ -4,23 +4,24 @@ import { StyleSheet } from 'react-native';
 
 // COLORES CLAVE
 const COLORS = {
-    DEFAULT: '#F0FFFF', // Azul muy claro (similar al blanco con un toque azul)
-    DEFAULT_BORDER: '#87CEEB', // Azul cielo ligero para el borde por defecto
-    FOCUS: '#E0FFE0', // Verde muy claro para el estado de foco/hover
-    FOCUS_BORDER: '#A2D02F', // Verde de Finanzauto para el borde de foco
-    TEXT_MAIN: '#176D6C', // Verde oscuro para el texto principal
-    TEXT_DETAIL: '#888888', // Gris para el ID
+    DEFAULT: '#F0FFFF', 
+    DEFAULT_BORDER: '#87CEEB', 
+    FOCUS: '#E0FFE0', 
+    FOCUS_BORDER: '#A2D02F',
+    TEXT_MAIN: '#176D6C', 
+    TEXT_DETAIL: '#888888', 
 };
-export const UserCardStyles = StyleSheet.create({
+export const UserCardStyles = StyleSheet.create({   
     cardContainer: {
-        borderRadius: 15,
+        borderRadius: 20,
         marginVertical: 8,
-        marginHorizontal: 4,
+        marginHorizontal: 6,
         padding: 10,
+        height: 130,
         flexDirection: 'row',
         alignItems: 'center',
         
-        // Sombra suave para que la tarjeta flote un poco
+       
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -28,7 +29,7 @@ export const UserCardStyles = StyleSheet.create({
         elevation: 5,
     },
 
-    // ESTILOS PARA LOS ESTADOS DE COLOR DE FONDO (Base e Interactivo)
+ 
     cardDefault: {
         backgroundColor: COLORS.DEFAULT,
         borderWidth: 2,
@@ -42,8 +43,8 @@ export const UserCardStyles = StyleSheet.create({
 
     // Contenedor de la Imagen
     imageContainer: {
-        width: 80,
-        height: 80,
+        width: 110,
+        height: 110,
         borderRadius: 10, // Menos redondeado que la tarjeta, pero con esquinas
         overflow: 'hidden', // Para contener la imagen
         marginRight: 15,
@@ -74,13 +75,15 @@ export const UserCardStyles = StyleSheet.create({
 
     // Enlace de Detalle
     detailLinkContainer: {
-        alignSelf: 'flex-end',
-        marginTop: 'auto', // Empuja el link hacia abajo
+        alignSelf: 'stretch', 
+        marginTop: 'auto', 
         flexDirection: 'row',
         alignItems: 'center',
+        color: COLORS.FOCUS_BORDER,
+        justifyContent: 'space-between', 
     },
     detailText: {
-        color: COLORS.TEXT_MAIN, // Color verde de la empresa
+        color: COLORS.TEXT_MAIN,
         fontSize: 14,
         fontWeight: '600',
         marginRight: 4,

@@ -1,4 +1,4 @@
-// src/views/list/UserListView.tsx (CÓDIGO CORREGIDO)
+// src/views/list/UserListView.tsx 
 
 import React, { useState, useEffect, useCallback } from 'react';
 import {
@@ -7,8 +7,6 @@ import {
   FlatList,
   Alert,
 
-  // Importamos Toast para el mensaje de éxito (si usas una librería de notificaciones)
-  // Para simplificar, usaremos alert() o console.log() si no tienes una librería de toasts. } from 'react-native';
 } from 'react-native';
 
 import { UserListViewStyles as styles } from '../../styles/views/UserListViewStyles';
@@ -16,12 +14,12 @@ import { UserListViewStyles as styles } from '../../styles/views/UserListViewSty
 import UserCard from '../../components/cards/UserCard';
 import CustomSpinner from '../../components/common/CustomSpinner';
 import DeleteConfirmationModal from '../../components/common/DeleteConfirmationModal';
-import { fetchDummyUsers, deleteUserFromDummyData } from '../../api/dummyData';
+import { fetchdummyUsers, deleteUserFromDummyData } from '../../api/dummyData';
 import { User } from '../../types/user';
 
-// DEFINICIÓN DE PROPIEDADES: Ahora UserListView acepta la función de navegación
+// DEFINICIÓN DE PROPIEDADES
 interface UserListViewProps {
-  onUserDetail: (userId: string) => void;
+    onUserDetail: (userId: string) => void;
 }
 
 /**
@@ -44,7 +42,7 @@ const UserListView: React.FC<UserListViewProps> = ({ onUserDetail }) => {
    */
   const loadUsers = useCallback(async () => {
     setIsLoading(true);
-    const fetchedUsers = await fetchDummyUsers();
+    const fetchedUsers = await fetchdummyUsers();
     setUsers(fetchedUsers);
     setIsLoading(false);
   }, []);

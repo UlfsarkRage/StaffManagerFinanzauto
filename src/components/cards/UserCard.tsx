@@ -15,11 +15,11 @@ import { User } from '../../types/user';
 import { UserCardStyles as styles } from '../../styles/components/UserCardStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-/// DEFINICIÓN DE PROPIEDADES: Añadimos la función para la acción de deslizar
+
 interface UserCardProps {
   user: User;
   onDetailPress: (userId: string) => void;
-  onSwipeDelete: (user: User) => void; // Función para abrir el modal de eliminación
+  onSwipeDelete: (user: User) => void; 
 }
 
 /**
@@ -31,7 +31,7 @@ const UserCard: React.FC<UserCardProps> = ({
   onDetailPress,
   onSwipeDelete,
 }) => {
-  // NUEVO ESTADO: Controla si la tarjeta ha sido clickeada y está en modo "espera" de navegación.
+  
   const [isClicked, setIsClicked] = useState(false);
   const swipeableRef = React.useRef<Swipeable>(null);
 
@@ -40,17 +40,14 @@ const UserCard: React.FC<UserCardProps> = ({
    * @description Maneja el evento de presión de la tarjeta y aplica el retraso.
    */
   const handlePress = () => {
-    // 1. Establecer el estado 'isClicked' a true
-    // Esto aplica el estilo verde inmediatamente y lo mantiene.
+   
     setIsClicked(true);
 
-    // 2. Iniciar el retraso de 1 segundo
+    
     setTimeout(() => {
-      // 3. Después del retraso, ejecuta la navegación.
-      // La tarjeta volverá a su estado inicial cuando el componente UserListView se remonte.
+    
       onDetailPress(user.id);
 
-      // NOTA: No necesitamos setIsClicked(false) porque el componente se desmonta al navegar.
     }, 300);
   };
 
@@ -91,12 +88,11 @@ const UserCard: React.FC<UserCardProps> = ({
     );
   };
 
-  // EL ESTILO PRINCIPAL DE LA TARJETA (QUE SE DESLIZA)
+  //Estilo principal de la tarjeta, cambia si está "clickeada" o no
   const cardStyle = ({ pressed }: { pressed: boolean }) => [
     styles.cardContainer,
     isClicked ? styles.cardFocus : styles.cardDefault,
-    // Usamos la prop 'pressed' de Pressable para darle feedback táctil
-    // si no estamos en modo espera.
+
     pressed && !isClicked ? { opacity: 0.8 } : {},
   ];
 
@@ -106,7 +102,7 @@ const UserCard: React.FC<UserCardProps> = ({
       // Mínima distancia para que se dispare la acción
       renderRightActions={renderRightActions}
       rightThreshold={50}
-      // Esto asegura que se muestre la parte de la tarjeta que no se desliza
+      
       overshootRight={false}
     >
       <Pressable onPress={handlePress} style={cardStyle} disabled={isClicked}>
@@ -129,7 +125,7 @@ const UserCard: React.FC<UserCardProps> = ({
           <Text style={styles.idText}>ID: {user.id}</Text>
 
           <View style={styles.detailLinkContainer}>
-            <Text style={styles.detailText}>Ver detalle</Text>
+            <Text style={styles.detailText}>Ver detalle </Text>
             <Icon name="chevron-right" style={styles.detailIcon} />
           </View>
         </View>
@@ -141,13 +137,13 @@ const UserCard: React.FC<UserCardProps> = ({
 // Estilos específicos para la acción de deslizar
 const componentStyles = StyleSheet.create({
   deleteAction: {
-    backgroundColor: '#D32F2F', // Rojo de eliminación
-    justifyContent: 'center',
+    backgroundColor: '#D32F2F', 
     alignItems: 'flex-end',
     paddingHorizontal: 20,
     marginVertical: 8,
     borderRadius: 15,
-    // Asegura que tenga el mismo alto que la tarjeta
+    justifyContent: 'center',
+   
     height: 'auto',
   },
   deleteIconContainer: {

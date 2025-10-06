@@ -1,86 +1,109 @@
 // src/api/dummyData.ts
 
-import { User } from '../types/user'; // Importamos el tipo que definimos
+import { User, UserCreatePayload } from '../types/user'; // Importamos el tipo que definimos
+
+
+
+const generateTempId = () => {
+    // Genera un ID temporal simple (e.g., 'temp-1', 'temp-2', etc.)
+    return 'temp-' + (dummyUsers.length + 1).toString(); 
+};
 
 /**
- * @name DUMMY_USERS
+ * @name dummy_users
  * @description Datos quemados para simular la respuesta de la API de lista de usuarios.
  * Usaremos estos datos hasta que conectemos la API real.
  */
-let DUMMY_USERS: User[] = [
+let dummyUsers: User[] = [
     {
         id: '60d0fe4f5311236168a109ca',
+        title: 'mr',
+        firstName: 'Juan',
+        lastName: 'Pérez García',
+        gender: 'male',
+        email: 'juan.perez@finanzauto.com',
+        dateOfBirth: '1985-06-15T10:00:00-05:00',
+        phone: '3101234567',
+        picture: 'https://randomuser.me/api/portraits/men/40.jpg',
+        document: '1020456789', 
+    },
+    {
+        id: '1030676727',
         title: 'ms',
         firstName: 'Sara Sofía',
         lastName: 'Andersen Toro',
-        picture: 'https://randomuser.me/api/portraits/women/1.jpg',
-    },
-    {
-        id: '60ddfs0fe4f5311236168a10s9ca',
-        title: 'ms',
-        firstName: 'Sara Sofía 2',
-        lastName: 'Andersen Toro',
-        picture: 'https://randomuser.me/api/portraits/women/1.jpg',
-    },
-    {
-        id: '60d0fe4f5311236168sa109cb',
-        title: 'mr',
-        firstName: 'Ricardo',
-        lastName: 'Martínez Vargas',
-        picture: 'https://randomuser.me/api/portraits/men/2.jpg',
-    },
-    {
-        id: '60d0fe4f5311s236168a109cc',
-        title: 'dr',
-        firstName: 'Elsa',
-        lastName: 'Gómez Prada',
-        picture: 'https://randomuser.me/api/portraits/women/3.jpg',
-    },
-    {
-        id: '60d0fe4f531f120036168a109ca',
-        title: 'ms',
-        firstName: 'Sara Sofía',
-        lastName: 'Andersen Toro',
-        picture: 'https://randomuser.me/api/portraits/women/1.jpg',
-    },
-    {
-        id: '60d0fe4f53112361680g0a109cb',
-        title: 'mr',
-        firstName: 'Ricardo',
-        lastName: 'Martínez Vargas',
-        picture: 'https://randomuser.me/api/portraits/men/2.jpg',
-    },
-    {
-        id: '60d0fe4f531123616800a1h09cc',
-        title: 'dr',
-        firstName: 'Elsa',
-        lastName: 'Gómez Prada',
-        picture: 'https://randomuser.me/api/portraits/women/3.jpg',
-    },
+        gender: 'female',
+        email: 'sara.andersen@finanzauto.com',
+        dateOfBirth: '1992-04-21T18:25:43-05:00',
+        phone: '3124846445',
+        picture: 'https://randomuser.me/api/portraits/women/12.jpg',
+        document: '52190876', 
+    }
 ];
 
 /**
- * @name fetchDummyUsers
- * @description Simula la obtención de la lista de usuarios con un retraso.
- * @returns {Promise<User[]>} Una promesa que resuelve con la lista actual de usuarios.
+ * @name fetchdummyUsers
+ * @description 
+ * @returns {Promise<User[]>} 
  */
-export const fetchDummyUsers = (): Promise<User[]> => {
+export const fetchdummyUsers = (): Promise<User[]> => {
     return new Promise(resolve => {
-        // Retraso de 1000ms para simular carga
+        // Retraso de 300ms para simular peticion a endpoint
         setTimeout(() => {
-            resolve([...DUMMY_USERS]); // Retorna una copia de la lista actual
+            resolve([...dummyUsers]);
         }, 300);
     });
 };
 
 /**
  * @name deleteUserFromDummyData
- * @description Elimina un usuario del array harcodeado y retorna la nueva lista.
- * @param userId El ID del usuario a eliminar.
- * @returns {User[]} El nuevo array de usuarios.
+ * @description 
+ * @param userId 
+ * @returns {User[]} 
  */
 export const deleteUserFromDummyData = (userId: string): User[] => {
-    // Filtra el array, manteniendo solo los usuarios cuyo ID NO coincide con el ID a eliminar.
-    DUMMY_USERS = DUMMY_USERS.filter(user => user.id !== userId);
-    return [...DUMMY_USERS];
+
+    dummyUsers = dummyUsers.filter(user => user.id !== userId);
+    return [...dummyUsers];
+};
+
+
+/**
+ * @name fetchUserById
+ * @description Simula la obtención de un único usuario por su ID.
+ * @param userId El ID del usuario a buscar.
+ * @returns {Promise<User | undefined>} Una promesa que resuelve con el usuario o undefined.
+ */
+export const fetchUserById = (userId: string): Promise<User | undefined> => {
+    return new Promise(resolve => {
+        // Retraso de 300ms para simular una búsqueda rápida
+        setTimeout(() => {
+            const user = dummyUsers.find(u => u.id === userId);
+            resolve(user);
+        }, 300);
+    });
+};
+
+
+/**
+ * @name addUserToDummyData
+ * @description Simula la creación de un nuevo usuario (POST) y lo añade a la lista local.
+ * @param payload Los datos del nuevo usuario.
+ * @returns {Promise<User>} Una promesa que resuelve con el usuario creado (con ID asignado).
+ */
+export const addUserToDummyData = (payload: UserCreatePayload): Promise<User> => {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            const newUser: User = {
+                ...payload,
+                id: generateTempId(), // Asignar un ID temporal
+            };
+            
+            // Añadir el nuevo usuario a la lista
+            dummyUsers.push(newUser);
+            
+            console.log('Usuario dummy agregado:', newUser.id);
+            resolve(newUser);
+        }, 500); // Simular un retraso de red
+    });
 };

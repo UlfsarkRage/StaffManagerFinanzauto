@@ -24,5 +24,5 @@ const AlertsScreen: React.FC = () => (
         <Text style={styles.text}>Alertas (Placeholder)</Text>
     </View>
 );
-export default AlertsScreen; // Exportación por defecto
+export default AlertsScreen; 
 
