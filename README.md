@@ -1,97 +1,57 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 📖 README: Finanzauto Staff Manager (Móvil)
 
-# Getting Started
+Este proyecto es la aplicación móvil desarrollada en **React Native** (CLI/Vanilla) para la gestión de usuarios (Staff Manager). Actualmente, la aplicación funciona con **datos dummy en memoria** antes de la integración con el backend de Django.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 🌟 Características y Decisiones de Diseño
 
-## Step 1: Start Metro
+* **Flujo de Identificación:** La aplicación usa el campo **`document`** como el identificador principal para la búsqueda y navegación, reemplazando al `id` interno.
+* **Gestión de Formularios:** Se implementó una lógica de validación estricta y genérica (`formValidator.ts`).
+* **Componentes Nativos Estables:** Se utiliza **`@react-native-community/datetimepicker`** para la Fecha de Nacimiento (funcionamiento estable).
+* **Decisión Crítica de UI:** Los selectores (`Título` y `Género`) fueron implementados como **`Input` de texto con validación por lista (`isOneOf`)** debido a conflictos recurrentes con las librerías de Picker nativas en el entorno de Android.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+---
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## 📂 Estructura del Proyecto
 
-```sh
-# Using npm
-npm start
+Basada en la arquitectura de carpetas del proyecto:
 
-# OR using Yarn
-yarn start
-```
+| Carpeta | Contenido | Notas Clave |
+| :--- | :--- | :--- |
+| **`src/api`** | `dummyData.ts` | **Contiene los datos quemados en memoria (`let dummyUsers`) y las funciones simuladas** (`fetchUserByDocument`, `addUserToDummyData`). Este archivo será reemplazado por la lógica de `fetch`/`axios` real. |
+| **`src/config`** | `formConfig.ts` | **Configuración maestra de todos los campos del formulario.** Define etiquetas, iconos, tipos y las reglas de validación. |
+| **`src/components`** | Componentes Reutilizables | Incluye `FormInput`, `FormDatePicker`, `ImageSelectorModal` (para el avatar), etc. |
+| **`src/views/detail`** | `UserDetailView.tsx` | Muestra la información de un usuario, incluyendo el campo **`document`** recién añadido. |
+| **`src/views/search`** | `UserSearchView.tsx` | Contiene la lógica para buscar usuarios usando el **`document`** ingresado en la barra. |
+| **`src/types`** | `user.ts` | Contiene la definición de tipos para `User` y `UserCreatePayload`, incluyendo el campo **`document`**. |
+| **`src/utils`** | `formValidator.ts` | **Lógica de validación centralizada.** Aquí se implementa la regla `isOneOf` para los campos de Título y Género. |
 
-## Step 2: Build and run your app
+---
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## 💻 Inicio Rápido y Desarrollo
 
-### Android
+Asume que Node.js, Java JDK y el SDK de Android están instalados.
 
-```sh
-# Using npm
-npm run android
+### 1. Instalación de Dependencias
 
-# OR using Yarn
-yarn android
-```
+Ejecuta el siguiente comando desde la raíz del proyecto:
 
-### iOS
+```bash
+npm install
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+### 2. Ejecutar la Aplicación en Desarrollo (Necesita tu PC)
+Abre dos terminales en la raíz del proyecto (D:\RepositoriosGitHub\FinanzautoStaffManager).
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+Terminal 1 (Metro Bundler)// npx react-native start
+Terminal 2 (Lanzar en Android)// npx react-native run-android
 
-```sh
-bundle install
-```
+!!!! IMPORTANTE !!!! Asegúrate de tener un emulador abierto o un dispositivo físico conectado via depuración USB con SO Android 11+
 
-Then, and every time you update your native dependencies, run:
+📦 Comandos de Compilación para APK
+1. Generar la APK de Prueba (Debug)
+Útil para pruebas rápidas
 
-```sh
-bundle exec pod install
-```
+Genera el bundle (código JS): npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+Compila la APK: cd android -> .\gradlew assembleDebug
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+Ubicación de la APK: android/app/build/outputs/apk/debug/app-debug.apk
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
