@@ -16,7 +16,7 @@ const generateTempId = () => {
  */
 let dummyUsers: User[] = [
     {
-        id: '60d0fe4f5311236168a109ca',
+        id: '1020456789',
         title: 'mr',
         firstName: 'Juan',
         lastName: 'Pérez García',
@@ -37,7 +37,7 @@ let dummyUsers: User[] = [
         dateOfBirth: '1992-04-21T18:25:43-05:00',
         phone: '3124846445',
         picture: 'https://randomuser.me/api/portraits/women/12.jpg',
-        document: '52190876', 
+        document: '1030676727', 
     }
 ];
 
@@ -69,16 +69,18 @@ export const deleteUserFromDummyData = (userId: string): User[] => {
 
 
 /**
- * @name fetchUserById
- * @description Simula la obtención de un único usuario por su ID.
- * @param userId El ID del usuario a buscar.
+ * @name fetchUserByDocument
+ * @description Simula la obtención de un único usuario por su DOCUMENTO.
+ * @param documentValue El DOCUMENTO del usuario a buscar.
  * @returns {Promise<User | undefined>} Una promesa que resuelve con el usuario o undefined.
  */
-export const fetchUserById = (userId: string): Promise<User | undefined> => {
+// CAMBIO 1: RENOMBRAR la función
+export const fetchUserByDocument = (documentValue: string): Promise<User | undefined> => {
     return new Promise(resolve => {
         // Retraso de 300ms para simular una búsqueda rápida
         setTimeout(() => {
-            const user = dummyUsers.find(u => u.id === userId);
+            // CAMBIO 2: BUSCAR POR u.document en lugar de u.id
+            const user = dummyUsers.find(u => u.document === documentValue); 
             resolve(user);
         }, 300);
     });

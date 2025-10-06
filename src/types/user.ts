@@ -12,6 +12,13 @@ export interface User {
     phone: string;
     picture: string;
     document: string; 
+    location?: {
+        street?: string;
+        city?: string;
+        state?: string;
+        country?: string;
+        timezone?: string;
+    };
 }
 
 // Interfaz para los datos que se envían a la API al crear (payload)

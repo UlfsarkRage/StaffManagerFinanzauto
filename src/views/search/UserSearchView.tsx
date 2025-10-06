@@ -2,12 +2,12 @@
 // src/views/search/UserSearchView.tsx
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TextInput,  ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 // IMPORTACIONES DEL PROYECTO
 import { User } from '../../types/user';
-import { fetchUserById } from '../../api/dummyData';
+import { fetchUserByDocument } from '../../api/dummyData';
 import { UserSearchViewStyles as styles } from '../../styles/views/UserSearchViewStyles'; // Importamos los estilos externos
 import UserDetailView from '../../views/detail/UserDetailView';
 
@@ -34,10 +34,11 @@ const UserSearchView: React.FC<UserSearchViewProps> = ({
 
   /**
    * @name searchForUser
-   * @description Lógica para buscar el usuario por el ID ingresado.
+   * @description Lógica para buscar el usuario por el ID/DOCUMENTO ingresado.
    */
-  const searchForUser = useCallback(async (id: string) => {
-    if (!id) {
+  const searchForUser = useCallback(async (documentValue: string) => {
+    // CAMBIO 2: Renombrar 'id' a 'documentValue'
+    if (!documentValue) {
       setFoundUser(null);
       setError(null);
       return;
@@ -47,12 +48,15 @@ const UserSearchView: React.FC<UserSearchViewProps> = ({
     setError(null);
 
     try {
-      const user = await fetchUserById(id);
+      // CAMBIO 3: LLAMAR A LA NUEVA FUNCIÓN fetchUserByDocument
+      const user = await fetchUserByDocument(documentValue);
       if (user) {
         setFoundUser(user);
       } else {
-        setFoundUser(null);
-        setError(`No se encontró ningún usuario con el ID: ${id}`);
+        setFoundUser(null); // CAMBIO 4: Mensaje de error para Documento
+        setError(
+          `No se encontró ningún usuario con el Documento: ${documentValue}`,
+        );
       }
     } catch (e) {
       setError('Ocurrió un error en la búsqueda.');
@@ -103,9 +107,7 @@ const UserSearchView: React.FC<UserSearchViewProps> = ({
       // NOTA: Envolvemos UserDetailView en un View simple
       // para que no interfiera con el padding/alineación del resultsContainer
       <View style={{ flex: 1, width: '100%' }}>
-        <UserDetailView
-          user={foundUser}
-        />
+        <UserDetailView user={foundUser} />
       </View>
     );
   };
@@ -122,7 +124,7 @@ const UserSearchView: React.FC<UserSearchViewProps> = ({
         />
         <TextInput
           style={styles.input}
-          placeholder="Buscar por ID de usuario..."
+          placeholder="Buscar por documento de usuario..."
           placeholderTextColor={styles.idText.color}
           value={searchText}
           onChangeText={handleSearchTextChange}
@@ -145,7 +147,7 @@ const UserSearchView: React.FC<UserSearchViewProps> = ({
 
         {!foundUser && !isLoading && !error && (
           <Text style={styles.messageText}>
-            Ingresa un ID en la barra para buscar un usuario.
+            Ingresa un número de documento en la barra para buscar un usuario.
           </Text>
         )}
       </View>

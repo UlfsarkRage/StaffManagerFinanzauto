@@ -60,6 +60,10 @@ const UserDetailView: React.FC<UserDetailViewProps> = ({ user }) => {
                 <DetailField icon="document-text-outline" label="Título" value={user.title} />
                 <DetailField icon="create-outline" label="Nombres" value={user.firstName} />
                 <DetailField icon="create-outline" label="Apellidos" value={user.lastName} />
+                <DetailField icon="id-card-outline" label="Documento" value={user.document} />
+                <DetailField icon="home-outline" label="Dirección" value={user.location?.street ?? 'Bogotá'} />
+                <DetailField icon="business-outline" label="Ciudad" value={user.location?.city ?? 'Bogotá'} />
+                <DetailField icon="flag-outline" label="País" value={user.location?.country ?? 'Colombia'} />
                 <DetailField icon="mail-outline" label="Email" value={user.email} />
                 <DetailField icon="call-outline" label="Teléfono" value={user.phone} />
                 <DetailField icon="calendar-outline" label="Fecha de Nacimiento" value={user.dateOfBirth.split('T')[0]} />
