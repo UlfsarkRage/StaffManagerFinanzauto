@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
  */
 const AlertsScreen: React.FC = () => (
     <View style={styles.center}>
-        <Text style={styles.text}>Alertas (Placeholder)</Text>
+        <Text style={styles.text}>Alertas (Notificaciones, advertencias, etc.)</Text>
     </View>
 );
 export default AlertsScreen; 

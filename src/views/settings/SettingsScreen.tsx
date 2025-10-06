@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
  */
 const SettingsScreen: React.FC = () => (
     <View style={styles.center}>
-        <Text style={styles.text}>Configuración (Placeholder)</Text>
+        <Text style={styles.text}>Configuración (Roles, contraseñas permisos, variedad de cosas que queramos agregar)</Text>
     </View>
 );
 
