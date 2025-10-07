@@ -1,15 +1,22 @@
 # 📖 README: Finanzauto Staff Manager (Móvil)
 
-Este proyecto es la aplicación móvil desarrollada en **React Native** (CLI/Vanilla) para la gestión de usuarios (Staff Manager). Actualmente, la aplicación funciona con **datos dummy en memoria** antes de la integración con el backend de Django.
+## 💻 Inicio Rápido y Desarrollo
 
-## 🌟 Características y Decisiones de Diseño
+Asume que Node.js, Java JDK y el SDK de Android están instalados.
 
-* **Flujo de Identificación:** La aplicación usa el campo **`document`** como el identificador principal para la búsqueda y navegación, reemplazando al `id` interno.
-* **Gestión de Formularios:** Se implementó una lógica de validación estricta y genérica (`formValidator.ts`).
-* **Componentes Nativos Estables:** Se utiliza **`@react-native-community/datetimepicker`** para la Fecha de Nacimiento (funcionamiento estable).
-* **Decisión Crítica de UI:** Los selectores (`Título` y `Género`) fueron implementados como **`Input` de texto con validación por lista (`isOneOf`)** debido a conflictos recurrentes con las librerías de Picker nativas en el entorno de Android.
+### 1. Instalación de Dependencias
 
----
+Ejecuta el siguiente comando desde la raíz del proyecto:
+
+```bash
+npm install
+
+### 2. Ejecutar la Aplicación en Desarrollo (Necesita tu PC)
+Abre dos terminales en la raíz del proyecto (D:\RepositoriosGitHub\FinanzautoStaffManager).
+
+Terminal 1 (Metro Bundler)// npx react-native start
+Terminal 2 (Lanzar en Android)// npx react-native run-android
+
 
 ## 📂 Estructura del Proyecto
 
@@ -27,22 +34,17 @@ Basada en la arquitectura de carpetas del proyecto:
 
 ---
 
-## 💻 Inicio Rápido y Desarrollo
+Este proyecto es la aplicación móvil desarrollada en **React Native** (CLI/Vanilla) para la gestión de usuarios (Staff Manager). Actualmente, la aplicación funciona tanto con  **datos dummy en memoria** "src</api/dummyData.ts" como con los endpoints de Django : los cuales se explican en el README.MD de la carpeta BackendDJango y son usables desde el archivo "src</api/endpointsDJango.ts"
 
-Asume que Node.js, Java JDK y el SDK de Android están instalados.
+## 🌟 Características y Decisiones de Diseño
 
-### 1. Instalación de Dependencias
+* **Flujo de Identificación:** La aplicación usa el campo **`document`** como el identificador principal para la búsqueda y navegación, reemplazando al `id` interno.
+* **Gestión de Formularios:** Se implementó una lógica de validación estricta y genérica (`formValidator.ts`).
+* **Componentes Nativos Estables:** Se utiliza **`@react-native-community/datetimepicker`** para la Fecha de Nacimiento (funcionamiento estable).
+* **Decisión Crítica de UI:** Los selectores (`Título` y `Género`) fueron implementados como **`Input` de texto con validación por lista (`isOneOf`)** debido a conflictos recurrentes con las librerías de Picker nativas en el entorno de Android.
 
-Ejecuta el siguiente comando desde la raíz del proyecto:
+---
 
-```bash
-npm install
-
-### 2. Ejecutar la Aplicación en Desarrollo (Necesita tu PC)
-Abre dos terminales en la raíz del proyecto (D:\RepositoriosGitHub\FinanzautoStaffManager).
-
-Terminal 1 (Metro Bundler)// npx react-native start
-Terminal 2 (Lanzar en Android)// npx react-native run-android
 
 !!!! IMPORTANTE !!!! Asegúrate de tener un emulador abierto o un dispositivo físico conectado via depuración USB con SO Android 11+
 

@@ -7,9 +7,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 // IMPORTACIONES DEL PROYECTO
 import { User } from '../../types/user';
-import { fetchUserByDocument } from '../../api/dummyData';
 import { UserSearchViewStyles as styles } from '../../styles/views/UserSearchViewStyles'; // Importamos los estilos externos
 import UserDetailView from '../../views/detail/UserDetailView';
+
+// Importamos tanto los datos dummy como los endpoints reales del backend para pruebas y tests
+import { fetchUserByDocument } from '../../api/dummyData';
+import { fetchUserByDocumentAPI } from '../../api/endpointsDJango'; 
 
 // DEFINIMOS PROPIEDADES
 interface UserSearchViewProps {
@@ -66,15 +69,53 @@ const UserSearchView: React.FC<UserSearchViewProps> = ({
     }
   }, []);
 
+
+
+
+  /**
+   * @name searchForUserAPI
+   * @description Lógica para buscar el usuario por el ID/DOCUMENTO ingresado via API DJANGO
+   */
+  const searchForUserAPI = useCallback(async (documentValue: string) => {
+    // CAMBIO 2: Renombrar 'id' a 'documentValue'
+    if (!documentValue) {
+      setFoundUser(null);
+      setError(null);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // CAMBIO 3: LLAMAR A LA NUEVA FUNCIÓN fetchUserByDocument
+      const user = await fetchUserByDocumentAPI(documentValue);
+      if (user) {
+        setFoundUser(user);
+      } else {
+        setFoundUser(null); // CAMBIO 4: Mensaje de error para Documento
+        setError(
+          `No se encontró ningún usuario con el Documento: ${documentValue}`,
+        );
+      }
+    } catch (e) {
+      setError('Ocurrió un error en la búsqueda.');
+      setFoundUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   // ejecutamos cuando se monta la vista o cuando el userId inicial cambia.
   useEffect(() => {
     if (userId) {
       // Si hay un ID que viene de la navegación (UserListView), lo buscamos.
       searchForUser(userId);
+      searchForUserAPI(userId);
 
       onClearUserId();
     }
-  }, [userId, onClearUserId, searchForUser]);
+  }, [userId, onClearUserId, searchForUser, searchForUserAPI]);
 
   /**
    * @name handleSearchTextChange
@@ -93,6 +134,7 @@ const UserSearchView: React.FC<UserSearchViewProps> = ({
   // Función de búsqueda manual (al presionar Enter/Submit en el teclado)
   const handleSubmitSearch = () => {
     searchForUser(searchText);
+    searchForUserAPI(searchText);
   };
 
   /**

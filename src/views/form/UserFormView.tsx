@@ -19,11 +19,13 @@ import { addUserToDummyData } from '../../api/dummyData';
 import FormInput from '../../components/common/FormInput';
 import { UserFormViewStyles as styles } from '../../styles/views/UserFormViewStyles';
 
+import { createUser, deleteUser } from '../../api/endpointsDJango'; 
+
 //import FormSelect from '../../components/common/FormSelect';
 //import FormNativePicker from '../../components/common/FormNativePicker';
 import FormDatePicker from '../../components/common/FormDatePicker';
 import ImageSelectorModal from '../../components/common/ImageSelectorModal';
-import { TITLE_OPTIONS, GENDER_OPTIONS } from '../../config/formConfig';
+//import { TITLE_OPTIONS, GENDER_OPTIONS } from '../../config/formConfig';
 
 // Estado inicial del formulario (valores por defecto)
 const initialFormState: UserCreatePayload = {
@@ -118,6 +120,65 @@ const UserFormView: React.FC<UserFormViewProps> = ({ onCancel, onSuccess }) => {
       Alert.alert(
         'Error de Registro',
         'No se pudo crear el usuario dummy. Intenta de nuevo.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+
+  /**
+   * @name handleSubmitAPI
+   * @description Maneja el proceso de validación y envío del formulario.
+   */
+  const handleSubmitAPI = async () => {
+    Keyboard.dismiss();
+
+    // 1. Validar el formulario completo
+    const validationErrors = validateForm(formData);
+    setErrors(validationErrors);
+
+    // 2. Comprobar si hay errores (Si todos los valores son nulos)
+    const hasErrors = Object.values(validationErrors).some(
+      error => error !== null,
+    );
+
+    if (hasErrors) {
+      Alert.alert(
+        'Error de Validación',
+        'Por favor, corrige los campos marcados antes de continuar.',
+      );
+      return;
+    }
+
+    // 3. Ejecutar el envío de datos real al Backend
+    setIsSubmitting(true);
+    try {
+      
+      const newUser = await createUser(formData);
+
+      if (newUser) {
+        // La creación fue exitosa y tenemos el objeto User real de Django (con ID y fechas reales)
+        Alert.alert(
+          'Éxito',
+          `Usuario ${newUser.firstName} registrado con ID: ${newUser.id}`,
+        );
+
+        // Limpiar el formulario y notificar a la vista padre
+        setFormData(initialFormState);
+        onSuccess(newUser);
+      } else {
+        // createUser devuelve 'undefined' si hubo un error de red o un 5xx de servidor.
+        Alert.alert(
+          'Error de Registro',
+          'No se pudo crear el usuario. Revisa el servidor o los logs.',
+        );
+      }
+    } catch (e) {
+      // Capturamos cualquier error que no haya sido atrapado internamente en createUser (ej. 400s)
+      Alert.alert(
+        'Error de Registro',
+        'No se pudo crear el usuario. Intenta de nuevo. (Verifica consola).',
       );
     } finally {
       setIsSubmitting(false);
@@ -294,7 +355,7 @@ const UserFormView: React.FC<UserFormViewProps> = ({ onCancel, onSuccess }) => {
           {/* Botón Crear */}
           <TouchableOpacity
             style={styles.createButton}
-            onPress={handleSubmit}
+            onPress={handleSubmit || handleSubmitAPI}
             disabled={isSubmitting}
           >
             <Text style={styles.createButtonText}>

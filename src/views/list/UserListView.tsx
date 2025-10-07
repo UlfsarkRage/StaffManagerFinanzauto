@@ -15,6 +15,7 @@ import UserCard from '../../components/cards/UserCard';
 import CustomSpinner from '../../components/common/CustomSpinner';
 import DeleteConfirmationModal from '../../components/common/DeleteConfirmationModal';
 import { fetchdummyUsers, deleteUserFromDummyData } from '../../api/dummyData';
+import { fetchAllUsers } from '../../api/endpointsDJango'; 
 import { User } from '../../types/user';
 
 // DEFINICIÓN DE PROPIEDADES
@@ -50,6 +51,21 @@ const UserListView: React.FC<UserListViewProps> = ({ onUserDetail }) => {
   useEffect(() => {
     loadUsers();
   }, [loadUsers]);
+
+  /**
+   * @name loadUsersAPI
+   * @description Carga la lista de usuarios desde la API de Django.
+   */
+  const loadUsersAPI = useCallback(async () => {
+    setIsLoading(true);
+    const fetchedUsers = await fetchAllUsers();
+    setUsers(fetchedUsers);
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    loadUsersAPI();
+  }, [loadUsersAPI]);
 
   /**
    * @name handleShowDeleteModal
