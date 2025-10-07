@@ -19,7 +19,7 @@ import { addUserToDummyData } from '../../api/dummyData';
 import FormInput from '../../components/common/FormInput';
 import { UserFormViewStyles as styles } from '../../styles/views/UserFormViewStyles';
 
-import { createUser, deleteUser } from '../../api/endpointsDJango'; 
+import { createUser } from '../../api/endpointsDJango'; 
 
 //import FormSelect from '../../components/common/FormSelect';
 //import FormNativePicker from '../../components/common/FormNativePicker';
